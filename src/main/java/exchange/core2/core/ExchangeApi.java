@@ -52,6 +52,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public final class ExchangeApi {
 
+    //存储交易指令的环形队列
     private final RingBuffer<OrderCommand> ringBuffer;
     private final LZ4Compressor lz4Compressor;
 
@@ -110,7 +111,7 @@ public final class ExchangeApi {
 
     public CompletableFuture<CommandResultCode> submitCommandAsync(ApiCommand cmd) {
         //log.debug("{}", cmd);
-
+        //提交命令入口
         if (cmd instanceof ApiMoveOrder) {
             return submitCommandAsync(MOVE_ORDER_TRANSLATOR, (ApiMoveOrder) cmd);
         } else if (cmd instanceof ApiPlaceOrder) {
@@ -200,6 +201,7 @@ public final class ExchangeApi {
                                                                               final Function<OrderCommand, R> responseTranslator) {
         final CompletableFuture<R> future = new CompletableFuture<>();
 
+        //发布事件
         ringBuffer.publishEvent(
                 (cmd, seq, apiCmd) -> {
                     translator.translateTo(cmd, seq, apiCmd);

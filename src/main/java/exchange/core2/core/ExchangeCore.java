@@ -108,14 +108,17 @@ public final class ExchangeCore {
         final SerializationConfiguration serializationCfg = exchangeConfiguration.getSerializationCfg();
 
         // creating serialization processor
+        //创建序列化处理器
         serializationProcessor = serializationCfg.getSerializationProcessorFactory().apply(exchangeConfiguration);
 
         // creating shared objects pool
+        //创建共享对象池
         final int poolInitialSize = (matchingEnginesNum + riskEnginesNum) * 8;
         final int chainLength = EVENTS_POOLING ? 1024 : 1;
         final SharedPool sharedPool = new SharedPool(poolInitialSize * 4, poolInitialSize, chainLength);
 
         // creating and attaching exceptions handler
+        //创建异常处理器
         final DisruptorExceptionHandler<OrderCommand> exceptionHandler = new DisruptorExceptionHandler<>("main", (ex, seq) -> {
             log.error("Exception thrown on sequence={}", seq, ex);
             // TODO re-throw exception on publishing
@@ -129,6 +132,7 @@ public final class ExchangeCore {
         final ExecutorService loaderExecutor = Executors.newFixedThreadPool(matchingEnginesNum + riskEnginesNum, threadFactory);
 
         // start creating matching engines
+        //开启撮合引擎
         final Map<Integer, CompletableFuture<MatchingEngineRouter>> matchingEngineFutures = IntStream.range(0, matchingEnginesNum)
                 .boxed()
                 .collect(Collectors.toMap(
@@ -140,6 +144,7 @@ public final class ExchangeCore {
         // TODO create processors in same thread we will execute it??
 
         // start creating risk engines
+        //开启风控引擎
         final Map<Integer, CompletableFuture<RiskEngine>> riskEngineFutures = IntStream.range(0, riskEnginesNum)
                 .boxed()
                 .collect(Collectors.toMap(

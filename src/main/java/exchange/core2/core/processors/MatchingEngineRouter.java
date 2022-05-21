@@ -161,6 +161,12 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable {
         this.cfgMarginTradingEnabled = ordersProcCfg.getMarginTradingMode() == OrdersProcessingConfiguration.MarginTradingMode.MARGIN_TRADING_ENABLED;
     }
 
+    /**
+     * 撮合引擎处理交易命令入口-disruptor事件消费入口
+     *
+     * @param seq
+     * @param cmd
+     */
     public void processOrder(long seq, OrderCommand cmd) {
 
         final OrderCommandType command = cmd.command;
