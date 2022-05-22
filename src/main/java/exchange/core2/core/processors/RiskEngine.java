@@ -317,6 +317,10 @@ public final class RiskEngine implements WriteBytesMarshallable {
         return res;
     }
 
+    /**
+     *  处理风控入口
+     * @param message
+     */
     private void handleBinaryMessage(BinaryDataCommand message) {
 
         if (message instanceof BatchAddSymbolsCommand) {
