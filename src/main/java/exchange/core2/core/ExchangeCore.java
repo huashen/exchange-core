@@ -187,6 +187,7 @@ public final class ExchangeCore {
                     return r1;
                 }));
 
+        //handler procR1 必须在handler matchingEngineHandlers前执行
         disruptor.after(procR1.toArray(new TwoStepMasterProcessor[0])).handleEventsWith(matchingEngineHandlers);
 
         // 3. risk release (R2) after matching engine (ME)
